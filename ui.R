@@ -1,3 +1,32 @@
+library(shiny)
+library(dplyr)
+library(ggplot2)
+library(rworldmap)
+library(markdown)
+library(RColorBrewer)
+
+getwd()
+setwd("C:/Users/ABC/Downloads")
+MSR_df <- read.csv("2018 Military Strength Ranking(2).csv")
+
+Africa <- MSR_df %>% filter(Region %in%"Africa")%>%arrange(Pwrindx)
+Asia <- MSR_df %>% filter(Region %in%"Asia")%>%arrange(Pwrindx)
+Europe <- MSR_df %>% filter(Region %in%"Europe")%>%arrange(Pwrindx)
+America <- MSR_df %>% filter(Region %in%"America")%>%arrange(Pwrindx)
+
+PowerIndexTop10 <- MSR_df %>%top_n(-10, Pwrindx)
+AfricaTop <- Africa %>%top_n(-10,Pwrindx)
+AsiaTop <- Asia%>%top_n(-10,Pwrindx)
+EuropeTop <- Europe %>%top_n(-10,Pwrindx)
+AmericaTop <-America %>%top_n(-10,Pwrindx)
+
+mapped_data <- joinCountryData2Map(MSR_df, joinCode="NAME", nameJoinColumn = "Country")
+colourPalette <- brewer.pal(6,'YlOrRd')
+
+# Manpower: [5:11]
+# Airpower: [12:18]
+# Land Strength: [19:23]
+# Naval Strength: [24:31]
 ui <- navbarPage("2018 Military Strength Ranking",
                  tabPanel("Global Data",
                           sidebarLayout(
